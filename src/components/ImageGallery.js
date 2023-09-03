@@ -1,19 +1,13 @@
+import { Gallery } from './ImageGallery.styled';
 import { ImageGalleryItem } from './ImageGalleryItem';
 
-export const ImageGallery = ({ items }) => {
+export const ImageGallery = ({ images }) => {
+  console.log(images);
   return (
-    <li>
-      {items.map(item => (
-        <div key={item.id}>
-          <ImageGalleryItem photo={item} />
-        </div>
+    <Gallery>
+      {images.map(image => (
+        <div key={image.id}>{<ImageGalleryItem image={image} />}</div>
       ))}
-    </li>
+    </Gallery>
   );
 };
-
-{
-  /* <ul class="gallery">
-  <!-- Набір <li> із зображеннями -->
-</ul> */
-}
