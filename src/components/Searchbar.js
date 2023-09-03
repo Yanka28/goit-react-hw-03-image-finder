@@ -13,10 +13,10 @@ export class Searchbar extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.onSubmit({ ...this.state });
-    console.log(this.state);
-    // this.setState({
-    //   request: '',
-    // });
+    console.log({ ...this.state });
+    this.setState({
+      request: '',
+    });
   };
 
   render() {

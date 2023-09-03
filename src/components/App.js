@@ -15,16 +15,17 @@ export class App extends Component {
 
   async componentDidMount() {
     const { query } = this.state;
+    console.log(query);
     const savedQuery = localStorage.getItem('saved-query');
     if (savedQuery !== null) {
       this.setState({
         query: JSON.parse(savedQuery),
       });
     }
-
     try {
       this.setState({ loading: true, error: false });
       const newphotos = await fetchPhotos(query);
+      console.log(newphotos);
       this.setState({ photos: newphotos });
     } catch (error) {
       this.setState({ error: true });
@@ -39,16 +40,10 @@ export class App extends Component {
     }
   }
 
-  onSubmit = object => {
-    this.setState({
-      query: object.request,
-    });
-  };
-
   render() {
-    const { query, photos } = this.state;
-    console.log(query);
+    const { photos } = this.state;
     console.log(photos);
+
     return (
       <Layout>
         <h1> </h1>
