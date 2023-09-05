@@ -6,7 +6,7 @@ import { ImageGallery } from './ImageGallery';
 import { Modal } from './Modal';
 import { Button } from './Button';
 import { fetchPhotos } from 'api';
-// import axios from 'axios';
+import { GlobalStyle } from './GlobalStyle';
 
 export class App extends Component {
   state = {
@@ -40,6 +40,14 @@ export class App extends Component {
     });
   };
 
+  handleEscPress = e => {
+    if (e.key === 'Escape')
+      this.setState({
+        isShow: false,
+        src: '',
+      });
+  };
+
   onClose = e => {
     this.setState({
       isShow: false,
@@ -59,7 +67,6 @@ export class App extends Component {
         const query = this.state.query.split('/')[1];
         const page = this.state.page;
         const newimages = await fetchPhotos(query, page);
-
         this.setState({ images: newimages });
       } catch (error) {
         this.setState({ error: true });
@@ -87,6 +94,7 @@ export class App extends Component {
           />
         )}
         {images.length > 0 && <Button onClick={this.handleLoadMore} />}
+        <GlobalStyle />
       </Layout>
     );
   }
