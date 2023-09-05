@@ -1,9 +1,10 @@
 import { Component } from 'react';
 import { Layout } from './Layout';
+import { Loader } from './Loader';
 import { Searchbar } from './Searchbar';
 import { ImageGallery } from './ImageGallery';
+import { Modal } from './Modal';
 import { Button } from './Button';
-import { ColorRing } from 'react-loader-spinner';
 import { fetchPhotos } from 'api';
 // import axios from 'axios';
 
@@ -14,14 +15,14 @@ export class App extends Component {
     page: 1,
     loading: false,
     error: false,
+    isShow: false,
+    src: '',
   };
 
   handleSubmit = evt => {
     evt.preventDefault();
     this.setState({
       query: `${Date.now()}/${evt.target.elements.query.value}`,
-      images: [],
-      page: 1,
     });
   };
 
@@ -29,6 +30,21 @@ export class App extends Component {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
+  };
+
+  handleClick = e => {
+    const { images } = this.state;
+    this.setState({
+      isShow: true,
+      src: images.find(image => image.id === Number(e.target.id)).largeImageURL,
+    });
+  };
+
+  onClose = e => {
+    this.setState({
+      isShow: false,
+      src: '',
+    });
   };
 
   async componentDidUpdate(prevProps, prevState) {
@@ -54,24 +70,23 @@ export class App extends Component {
   }
 
   render() {
-    const { images, loading } = this.state;
+    const { images, loading, src, isShow } = this.state;
     return (
       <Layout>
         <h1> </h1>
         <Searchbar onSubmit={this.handleSubmit} />
-        {loading && (
-          <ColorRing
-            visible={true}
-            height="80"
-            width="80"
-            ariaLabel="blocks-loading"
-            wrapperStyle={{}}
-            wrapperClass="blocks-wrapper"
-            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+        {loading && <Loader />}
+        {images.length > 0 && (
+          <ImageGallery images={images} handleClick={this.handleClick} />
+        )}
+        {isShow && (
+          <Modal
+            src={src}
+            onClose={this.onClose}
+            // handleEscPress={this.handleEscPress}
           />
         )}
-        {images.length > 0 && <ImageGallery images={images} />}
-        <Button onClick={this.handleLoadMore} />
+        {images.length > 0 && <Button onClick={this.handleLoadMore} />}
       </Layout>
     );
   }

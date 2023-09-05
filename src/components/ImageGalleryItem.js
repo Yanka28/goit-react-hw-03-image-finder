@@ -1,14 +1,10 @@
 import { Item, Image } from './ImageGalleryItem.styled';
 
-export const ImageGalleryItem = ({ image }) => {
-  const { webformatURL, largeImageURL } = image;
+export const ImageGalleryItem = ({ image, handleClick }) => {
+  const { webformatURL, id } = image;
   return (
-    <Item className="gallery-item">
-      {
-        <a href={largeImageURL}>
-          <Image src={webformatURL} alt="{tags}" loading="lazy" />
-        </a>
-      }
+    <Item onClick={handleClick}>
+      {<Image src={webformatURL} alt="photo" id={id} loading="lazy" />}
     </Item>
   );
 };
