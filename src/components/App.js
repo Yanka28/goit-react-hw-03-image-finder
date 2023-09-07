@@ -17,12 +17,15 @@ export class App extends Component {
     error: false,
     isShow: false,
     src: '',
+    loadMore: true,
   };
 
   handleSubmit = evt => {
     evt.preventDefault();
     this.setState({
       query: `${Date.now()}/${evt.target.elements.query.value}`,
+      page: 1,
+      images: [],
     });
   };
 
@@ -32,20 +35,11 @@ export class App extends Component {
     }));
   };
 
-  handleClick = e => {
-    const { images } = this.state;
+  handleClick = image => {
     this.setState({
       isShow: true,
-      src: images.find(image => image.id === Number(e.target.id)).largeImageURL,
+      src: image.largeImageURL,
     });
-  };
-
-  handleEscPress = e => {
-    if (e.key === 'Escape')
-      this.setState({
-        isShow: false,
-        src: '',
-      });
   };
 
   onClose = e => {
@@ -60,24 +54,30 @@ export class App extends Component {
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
-      localStorage.setItem('saved-query', JSON.stringify(this.state.query));
-
       try {
         this.setState({ loading: true, false: false });
         const query = this.state.query.split('/')[1];
         const page = this.state.page;
-        const newimages = await fetchPhotos(query, page);
-        this.setState({ images: newimages });
+        let newimages = {};
+        if (query !== '') newimages = await fetchPhotos(query, page);
+        else console.log('введіть запит');
+        const { hits, totalHits } = newimages;
+        this.setState({
+          images: [...prevState.images, ...hits],
+          loadMore: this.state.page < Math.ceil(totalHits / 12),
+        });
       } catch (error) {
         this.setState({ error: true });
       } finally {
-        this.setState({ loading: false });
+        this.setState({
+          loading: false,
+        });
       }
     }
   }
 
   render() {
-    const { images, loading, src, isShow } = this.state;
+    const { images, loading, src, isShow, loadMore } = this.state;
     return (
       <Layout>
         <h1> </h1>
@@ -93,7 +93,9 @@ export class App extends Component {
             // handleEscPress={this.handleEscPress}
           />
         )}
-        {images.length > 0 && <Button onClick={this.handleLoadMore} />}
+        {images.length > 0 && loadMore && (
+          <Button onClick={this.handleLoadMore} />
+        )}
         <GlobalStyle />
       </Layout>
     );

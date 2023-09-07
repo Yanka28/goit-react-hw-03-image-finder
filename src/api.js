@@ -6,6 +6,6 @@ export const fetchPhotos = async (newquery, newpage) => {
   const resp = await axios.get(
     `?q=${newquery}&page=${newpage}&key=38400956-ed3ce45b124f70d420fda24dd&image_type=photo&orientation=horizontal&per_page=12`
   );
-  console.log(resp.data);
-  return resp.data.hits;
+  // console.log('resp.data', resp.data);
+  return resp.data;
 };
