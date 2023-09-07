@@ -7,6 +7,8 @@ import { Modal } from './Modal';
 import { Button } from './Button';
 import { fetchPhotos } from 'api';
 import { GlobalStyle } from './GlobalStyle';
+import toast, { Toaster } from 'react-hot-toast';
+import 'react-toastify/dist/ReactToastify.css';
 
 export class App extends Component {
   state = {
@@ -60,7 +62,7 @@ export class App extends Component {
         const page = this.state.page;
         let newimages = {};
         if (query !== '') newimages = await fetchPhotos(query, page);
-        else console.log('введіть запит');
+        else toast.error('ТАК НЕ СПРАЦЮЄ, ВВЕДИ ЗАПИТ ');
         const { hits, totalHits } = newimages;
         this.setState({
           images: [...prevState.images, ...hits],
@@ -78,6 +80,7 @@ export class App extends Component {
 
   render() {
     const { images, loading, src, isShow, loadMore } = this.state;
+    console.log(images);
     return (
       <Layout>
         <h1> </h1>
@@ -86,17 +89,12 @@ export class App extends Component {
         {images.length > 0 && (
           <ImageGallery images={images} handleClick={this.handleClick} />
         )}
-        {isShow && (
-          <Modal
-            src={src}
-            onClose={this.onClose}
-            // handleEscPress={this.handleEscPress}
-          />
-        )}
+        {isShow && <Modal src={src} onClose={this.onClose} />}
         {images.length > 0 && loadMore && (
           <Button onClick={this.handleLoadMore} />
         )}
         <GlobalStyle />
+        <Toaster position="top-center" />
       </Layout>
     );
   }
