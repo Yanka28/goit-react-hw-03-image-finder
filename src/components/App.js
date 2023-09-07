@@ -24,11 +24,15 @@ export class App extends Component {
 
   handleSubmit = evt => {
     evt.preventDefault();
-    this.setState({
-      query: `${Date.now()}/${evt.target.elements.query.value}`,
-      page: 1,
-      images: [],
-    });
+    const value = evt.target.elements.query.value.trim();
+    if (value === '') {
+      return toast.error('ТАК НЕ СПРАЦЮЄ, ВВЕДИ ЗАПИТ ');
+    } else
+      this.setState({
+        query: `${Date.now()}/${value}`,
+        page: 1,
+        images: [],
+      });
   };
 
   handleLoadMore = () => {
@@ -60,14 +64,14 @@ export class App extends Component {
         this.setState({ loading: true, false: false });
         const query = this.state.query.split('/')[1];
         const page = this.state.page;
-        let newimages = {};
-        if (query !== '') newimages = await fetchPhotos(query, page);
-        else toast.error('ТАК НЕ СПРАЦЮЄ, ВВЕДИ ЗАПИТ ');
-        const { hits, totalHits } = newimages;
-        this.setState({
+        const { hits, totalHits } = await fetchPhotos(query, page);
+        if (hits.length === 0) {
+          return toast.error('ЗА ВАШИМ ЗАПИТОМ НІЧОГО НЕ ЗНАЙДЕНО');
+        }
+        this.setState(prevState => ({
           images: [...prevState.images, ...hits],
           loadMore: this.state.page < Math.ceil(totalHits / 12),
-        });
+        }));
       } catch (error) {
         this.setState({ error: true });
       } finally {

@@ -3,6 +3,7 @@ import { Component } from 'react';
 
 export class Modal extends Component {
   handleEscape = e => {
+    console.log('gvmhgchgc');
     if (e.key === 'Escape') this.props.onClose();
   };
   handleOverlay = e => {
