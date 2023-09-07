@@ -80,7 +80,6 @@ export class App extends Component {
 
   render() {
     const { images, loading, src, isShow, loadMore } = this.state;
-    console.log(images);
     return (
       <Layout>
         <h1> </h1>
